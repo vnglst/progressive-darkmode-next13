@@ -1,5 +1,5 @@
 import { PropsWithChildren } from "react";
-import { cookies } from "next/headers";
+import { cookies, headers } from "next/headers";
 
 import ThemeToggle, { Theme } from "@/components/ThemeToggle";
 
@@ -12,12 +12,14 @@ export const metadata = {
 
 export default function RootLayout({ children }: PropsWithChildren) {
   const cookieTheme = cookies().get("theme")?.value as Theme;
+  const headersTheme = headers().get("Sec-CH-Prefers-Color-Scheme") as Theme;
+  const theme = cookieTheme || headersTheme;
 
   return (
-    <html lang="en" className={cookieTheme}>
+    <html lang="en" className={theme === "dark" ? "dark" : ""}>
       <body className="flex flex-col bg-gradient-to-b from-white dark:from-black to-gray-100 dark:to-gray-900">
         <nav className="flex justify-end p-5">
-          <ThemeToggle theme={cookieTheme} />
+          <ThemeToggle theme={theme} />
         </nav>
         {children}
       </body>
